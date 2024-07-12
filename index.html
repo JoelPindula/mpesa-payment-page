@@ -3,69 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página de Pagamento M-Pesa</title>
+    <title>Pagamento M-Pesa</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; }
-        .container { width: 300px; margin: 0 auto; }
-        h1 { font-size: 24px; text-align: center; }
-        form { display: flex; flex-direction: column; }
-        label { margin-top: 10px; }
-        input { margin-bottom: 10px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-        button { padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
-        button:hover { background-color: #0056b3; }
-        #result { margin-top: 20px; text-align: center; }
-        #result p { font-size: 18px; }
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            width: 300px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 24px;
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-top: 10px;
+        }
+        input {
+            margin-bottom: 10px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            text-align: center;
+        }
+        #result p {
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Pagar com M-Pesa</h1>
+        <h1>Pagamento M-Pesa</h1>
         <form id="paymentForm">
-            <label for="transactionReference">Referência da Transação:</label>
-            <input type="text" id="transactionReference" required>
-            <label for="customerMSISDN">Número M-Pesa:</label>
-            <input type="text" id="customerMSISDN" required>
-            <label for="amount">Valor:</label>
-            <input type="text" id="amount" required>
-            <label for="thirdPartyReference">Referência Terceiros:</label>
-            <input type="text" id="thirdPartyReference" required>
-            <label for="serviceProviderCode">Código do Provedor de Serviço:</label>
-            <input type="text" id="serviceProviderCode" required>
+            <label for="name">Nome:</label>
+            <input type="text" id="name" name="name" required>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <label for="phone">Número de Telefone:</label>
+            <input type="tel" id="phone" name="phone" required>
             <button type="submit">Pagar</button>
         </form>
         <div id="result"></div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/3.0.0-beta.1/jsencrypt.min.js"></script>
     <script>
         document.getElementById('paymentForm').addEventListener('submit', async function(event) {
             event.preventDefault();
 
-            const transactionReference = document.getElementById('transactionReference').value;
-            const customerMSISDN = document.getElementById('customerMSISDN').value;
-            const amount = document.getElementById('amount').value;
-            const thirdPartyReference = document.getElementById('thirdPartyReference').value;
-            const serviceProviderCode = document.getElementById('serviceProviderCode').value;
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const transactionReference = name + Math.floor(1000 + Math.random() * 9000);
+            const publicKey = `MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAszE+xAKVB9HRarr6/uHYYAX/RdD6KGVIGlHv98QKDIH26ldYJQ7zOuo9qEscO0M1psSPe/67AWYLEXh13fbtcSKGP6WFjT9OY6uV5ykw9508x1sW8UQ4ZhTRNrlNsKizE/glkBfcF2lwDXJGQennwgickWz7VN+AP/1c4DnMDfcl8iVIDlsbudFoXQh5aLCYl+XOMt/vls5a479PLMkPcZPOgMTCYTCE6ReX3KD2aGQ62uiu2T4mK+7Z6yvKvhPRF2fTKI+zOFWly//IYlyB+sde42cIU/588msUmgr3G9FYyN2vKPVy/MhIZpiFyVc3vuAAJ/mzue5p/G329wzgcz0ztyluMNAGUL9A4ZiFcKOebT6y6IgIMBeEkTwyhsxRHMFXlQRgTAufaO5hiR/usBMkoazJ6XrGJB8UadjH2m2+kdJIieI4FbjzCiDWKmuM58rllNWdBZK0XVHNsxmBy7yhYw3aAIhFS0fNEuSmKTfFpJFMBzIQYbdTgI28rZPAxVEDdRaypUqBMCq4OstCxgGvR3Dy1eJDjlkuiWK9Y9RGKF8HOI5a4ruHyLheddZxsUihziPF9jKTknsTZtF99eKTIjhV7qfTzxXq+8GGoCEABIyu26LZuL8X12bFqtwLAcjfjoB7HlRHtPszv6PJ0482ofWmeH0BE8om7VrSGxsCAwEAAQ==`;
+            const apiKey = 'aaaab09uz9f3asdcjyk7els777ihmwv8';
 
-            const apiKey = "fmn2bwllcy8poyv2g5su1omw8qi9psqv";
-            const publicKey = "MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAmptSWqV7cGUUJJhUBxsMLonux24u+FoTlrb+4Kgc6092JIszmI1QUoMohaDDXSVueXx6IXwYGsjjWY32HGXj1iQhkALXfObJ4DqXn5h6E8y5/xQYNAyd5bpN5Z8r892B6toGzZQVB7qtebH4apDjmvTi5FGZVjVYxalyyQkj4uQbbRQjgCkubSi45Xl4CGtLqZztsKssWz3mcKncgTnq3DHGYYEYiKq0xIj100LGbnvNz20Sgqmw/cH+Bua4GJsWYLEqf/h/yiMgiBbxFxsnwZl0im5vXDlwKPw+QnO2fscDhxZFAwV06bgG0oEoWm9FnjMsfvwm0rUNYFlZ+TOtCEhmhtFp+Tsx9jPCuOd5h2emGdSKD8A6jtwhNa7oQ8RtLEEqwAn44orENa1ibOkxMiiiFpmmJkwgZPOG/zMCjXIrrhDWTDUOZaPx/lEQoInJoE2i43VN/HTGCCw8dKQAwg0jsEXau5ixD0GUothqvuX3B9taoeoFAIvUPEq35YulprMM7ThdKodSHvhnwKG82dCsodRwY428kg2xM/UjiTENog4B6zzZfPhMxFlOSFX4MnrqkAS+8Jamhy1GgoHkEMrsT5+/ofjCx0HjKbT5NuA2V/lmzgJLl3jIERadLzuTYnKGWxVJcGLkWXlEPYLbiaKzbJb2sYxt+Kt5OxQqC1MCAwEAAQ==";
+            const encrypt = new JSEncrypt();
+            encrypt.setPublicKey(publicKey);
+            const encryptedApiKey = encrypt.encrypt(apiKey);
 
-            const response = await fetch('https://api.sandbox.vm.co.mz:18352/ipg/v1x/c2bPayment/singleStage/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`,
-                    'Origin': 'developer.mpesa.vm.co.mz'
-                },
-                body: JSON.stringify({
-                    input_TransactionReference: transactionReference,
-                    input_CustomerMSISDN: customerMSISDN,
-                    input_Amount: amount,
-                    input_ThirdPartyReference: thirdPartyReference,
-                    input_ServiceProviderCode: serviceProviderCode
-                })
-            });
+            const requestData = {
+                input_TransactionReference: transactionReference,
+                input_CustomerMSISDN: phone,
+                input_Amount: "400",
+                input_ThirdPartyReference: email,
+                input_ServiceProviderCode: "CursoImportacaoJP"
+            };
 
-            const result = await response.json();
-            document.getElementById('result').innerHTML = `<p>${result.output_ResponseDesc}</p>`;
+            try {
+                const response = await axios.post('https://api.sandbox.vm.co.mz:18352/ipg/v1x/c2bPayment/singleStage/', requestData, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${encryptedApiKey}`,
+                        'Origin': 'developer.mpesa.vm.co.mz'
+                    }
+                });
+
+                document.getElementById('result').innerHTML = `<p>${response.data.message}</p>`;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `<p>Error: ${error.response ? error.response.data : error.message}</p>`;
+            }
         });
     </script>
 </body>
